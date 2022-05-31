@@ -1,0 +1,569 @@
+class igra
+{
+	field Array A; // polje osobe
+	field Array B; // polje racunala
+	field Array C; 
+	field int igrac;	
+	
+	constructor igra new()
+	{	
+		var int i;
+		var int j;
+		
+		do pocetak();	
+	
+		let A = Array.new(9);	
+		let B = Array.new(9);
+		let C = Array.new(9);	//svi moguci potezi/brojevi
+		
+		let i = 0;
+		while(i < 9)			//popuni polja nulama
+		{
+			let A[i] = 0;
+			let B[i] = 0;
+			let i = i + 1;
+		}
+		
+		let j = 0;
+		while(j < 9)
+		{
+			let C[j] = 49 + j; //49, 50, 51..57  popunjava brojevima tipaka
+			let j = j + 1;
+		}
+		return this;
+	}
+	
+		
+	
+	method void pocetak()				//metoda koja ispisuje pocetnu stranicu
+	{
+		do Output.printString("                      KRIZIC - KRUZIC");
+		do Output.println();
+		do Output.println();
+		do Output.printString("  Da biste igrali prvi pritisnite 1, inace 2.");
+		do Output.println();	
+		do Output.println();			
+		do Output.printString("  Polja:");
+		do Output.println();
+		do Output.println();
+		do Output.printString("      1 2 3");
+		do Output.println();
+		do Output.printString("      4 5 6");
+		do Output.println();
+		do Output.printString("      7 8 9");
+		do Output.println();
+		
+		return;
+	}
+	
+	
+	
+	method void prvi()		//vraca tko prvi igra
+	{
+		var char k;
+		var int j;
+		let k = 0;
+		let j = 0;
+		
+		while(j = 0)
+		{
+			while(k = 0)
+			{
+				let k = Keyboard.keyPressed();		//unos s tipkovnice
+				do Sys.wait(5);						
+			}
+	
+		
+			if (k = 49)		// 49 je tipka 1
+			{
+				let j = 1;
+			}
+			if (k = 50)		//50 je 2
+			{
+				let j = 2;
+			}
+			let k = 0;
+		}
+		
+		if (j = 1)																																	
+		{
+			let igrac = -1;
+			do Output.printString("                   IGRATE PRVI, vi ste X. ");
+			do Sys.wait(2000);
+			do Screen.clearScreen();		//ocistimo ekran, da bismo imali samo plocu ispisanu
+			do Sys.wait(500);
+			do nacrtaj_plocu();
+		}
+		if (j = 2)
+		{
+			let igrac = 0;
+			do Output.printString("                   IGRATE DRUGI, vi ste X. ");
+			do Sys.wait(2000);
+			do Screen.clearScreen();
+			do Sys.wait(500);
+			do nacrtaj_plocu();
+		}
+		
+		
+		return;
+	}
+	
+	
+	
+	method void igranje()
+	{
+		var int k, j, krug, r;
+		let k = 0;
+		let j = 0;
+		let krug = 0;
+
+		while(krug < 9)		//ide po krugovima igre, kojih ima max 9, od 0...8
+		{
+			while(igrac = -1)		//igra COVJEK, covjek je uvijek true (-1)
+			{
+				while(j = 0)
+				{
+					while(k = 0)
+					{
+						let k = Keyboard.keyPressed();
+						do Sys.wait(5);						
+					}
+					if (~trazi(k, A) & ~trazi(k, B) & trazi(k, C))	//tipka koja nije u A i B, a je u C
+					{
+						let j = k;
+					}
+					let k = 0;
+					
+				}
+				let A[krug] = j;
+				do crtanje(j, igrac);				//nacrtaj X
+				if(pobjednik(A))					//ako osoba ima 3 u nizu nakon ovog poteza
+				{
+					do Output.println();
+					do Sys.wait(1500);
+					do Screen.clearScreen();
+					do Output.printString("                      POBIJEDILI STE!");
+					do Sys.wait(1500);
+					let igrac = 2;
+					let krug = 9;
+				}
+				if((krug = 8) & ~(pobjednik(A)))		//ako je zadnji krug, a osoba nije pobjednik
+				{
+					do Output.println();
+					do Sys.wait(1500);
+					do Screen.clearScreen();
+					do Output.printString("                      IZJEDNACENO!");
+					do Sys.wait(1500);
+					let igrac = 2;
+					let krug = 9;
+				}
+				else
+				{
+					if(~(igrac = 2))
+					{
+						let krug = krug + 1;
+						let igrac = 0;					//neka igra racunalo
+					}
+				}
+				let j = 0;
+				
+			}
+			
+			while(igrac = 0)						//igra RACUNALO
+			{
+				if (provjera(B, krug))				//ako imamo dva O, dodaj treci O za pobjedu
+				{
+					do Output.println();
+					do Sys.wait(1500);
+					do Screen.clearScreen();
+					do Output.printString("                      IZGUBILI STE!");		
+					do Sys.wait(1500);
+					let igrac = 2;
+					let krug = 9;
+				}
+				
+				if(~(igrac = 2))					
+				{
+					if (provjera(A, krug))			//ako imamo dva X, stavi O da sprijeci pobjedu
+					{	
+						
+						if(pobjednik(B))
+						{
+							do Output.println();
+							do Sys.wait(1500);
+							do Screen.clearScreen();
+							do Output.printString("                      IZGUBILI STE!");		
+							do Sys.wait(1500);
+							let igrac = 2;
+							let krug = 9;
+
+						}
+						if((krug = 8) & ~(pobjednik(B)))	//ako je zadnji krug, a kruzic nije pobijedio
+						{
+							do Output.println();
+							do Sys.wait(1500);
+							do Screen.clearScreen();
+							do Output.printString("                      IZJEDNACENO!");
+							do Sys.wait(1500);
+							let igrac = 2;
+							let krug = 9;
+						}
+						else
+						{
+							if(~(igrac = 2))
+							{
+								let krug = krug + 1;
+								let igrac = -1;				//neka igra osoba
+							}
+						}
+					}
+					else									//ako nijedan slucaj nije prosao, onda O stavi na random poziciju
+					{
+						let r = random();
+						let B[krug] = r;
+						do Sys.wait(500);
+						do crtanje(r, igrac);
+						
+						if(pobjednik(B))
+						{
+							do Output.println();
+							do Sys.wait(1500);
+							do Screen.clearScreen();
+							do Output.printString("                      IZGUBILI STE!");		
+							do Sys.wait(1500);
+							let igrac = 2;
+							let krug = 9;
+
+						}
+						if((krug = 8) & ~(pobjednik(B)))
+						{
+							do Output.println();
+							do Sys.wait(1500);
+							do Screen.clearScreen();
+							do Output.printString("                      IZJEDNACENO!");
+							do Sys.wait(1500);
+							let igrac = 2;
+							let krug = 9;
+						}
+						else
+						{
+							if(~(igrac = 2))
+							{
+								let krug = krug + 1;
+								let igrac = -1;				//neka igra osoba
+							}
+						}
+						
+					}
+				}
+
+			}
+			
+			
+		}
+		return;
+	}
+	
+
+	method bool provjera(Array P, int krug)			//provjeri ima li za dano polje, dva elementa koja bi mogla tvoriti pobjedu ako dodam treci takav element
+	{ 
+		if(trazi(49, P) & trazi(50,P) & ~trazi(51,B) & ~trazi(51, A)){
+			do Sys.wait(500);
+			do crtanje(51, false);
+			let B[krug] = 51;
+			return true;
+		}
+		if(trazi(50,P) & trazi(51,P) & ~trazi(49,B) & ~trazi(49, A)){
+			do Sys.wait(500);
+			do crtanje(49, false);
+			let B[krug] = 49;
+			return true;
+		}
+		if(trazi(52,P) & trazi(53,P) & ~trazi(54,B) & ~trazi(54, A)){
+			do Sys.wait(500);
+			do crtanje(54, false);
+			let B[krug] = 54;
+			return true;
+		}
+		if(trazi(53,P) & trazi(54,P) & ~trazi(52,B) & ~trazi(52, A)){
+			do Sys.wait(500);
+			do crtanje(52, false);
+			let B[krug] = 52;
+			return true;
+		}
+		if(trazi(55,P) & trazi(56,P) & ~trazi(57,B) & ~trazi(57, A)){
+			do Sys.wait(500);
+			do crtanje(57, false);
+			let B[krug] = 57;
+			return true;
+		}
+		if(trazi(56,P) & trazi(57,P) & ~trazi(55,B) & ~trazi(55, A)){
+			do Sys.wait(500);
+			do crtanje(55, false);
+			let B[krug] = 55;
+			return true;
+		}
+		if(trazi(49,P) & trazi(52,P) & ~trazi(55,B) & ~trazi(55, A)){
+			do Sys.wait(500);
+			do crtanje(55, false);
+			let B[krug] = 55;
+			return true;
+		}
+		if(trazi(55,P) & trazi(52,P) & ~trazi(49,B) & ~trazi(49, A)){
+			do Sys.wait(500);
+			do crtanje(49, false);
+			let B[krug] = 49;
+			return true;
+		}
+		if(trazi(50,P) & trazi(53,P) & ~trazi(56,B) & ~trazi(56, A)){
+			do Sys.wait(500);
+			do crtanje(56, false);
+			let B[krug] = 56;
+			return true;
+		}
+		if(trazi(53,P) & trazi(56,P) & ~trazi(50,B) & ~trazi(50, A)){
+			do Sys.wait(500);
+			do crtanje(50, false);
+			let B[krug] = 50;
+			return true;
+		}
+		if(trazi(51,P) & trazi(54,P) & ~trazi(57,B) & ~trazi(57, A)){
+			do Sys.wait(500);
+			do crtanje(57, false);
+			let B[krug] = 57;
+			return true;
+		}
+		if(trazi(54,P) & trazi(57,P) & ~trazi(51,B) & ~trazi(51, A)){
+			do Sys.wait(500);
+			do crtanje(51, false);
+			let B[krug] = 51;
+			return true;
+		}
+		if(trazi(51,P) & trazi(53,P) & ~trazi(55,B) & ~trazi(55, A)){
+			do Sys.wait(500);
+			do crtanje(55, false);
+			let B[krug] = 55;
+			return true;
+		}
+		if(trazi(53,P) & trazi(55,P) & ~trazi(51,B) & ~trazi(51, A)){
+			do Sys.wait(500);
+			do crtanje(51, false);
+			let B[krug] = 51;
+			return true;
+		}
+		if(trazi(49,P) & trazi(53,P) & ~trazi(57,B) & ~trazi(57, A)){
+			do Sys.wait(500);
+			do crtanje(57, false);
+			let B[krug] = 57;
+			return true;
+		}
+		if(trazi(53,P) & trazi(57,P) & ~trazi(49,B) & ~trazi(49, A)){
+			do Sys.wait(500);
+			do crtanje(49, false);
+			let B[krug] = 49;
+			return true;
+		}
+		if(trazi(49,P) & trazi(51,P) & ~trazi(50,B) & ~trazi(50, A)){
+			do Sys.wait(500);
+			do crtanje(50, false);
+			let B[krug] = 50;
+			return true;
+		}
+		if(trazi(52,P) & trazi(54,P) & ~trazi(53,B) & ~trazi(53, A)){
+			do Sys.wait(500);
+			do crtanje(53, false);
+			let B[krug] = 53;
+			return true;
+		}
+		if(trazi(55,P) & trazi(57,P) & ~trazi(56,B) & ~trazi(56, A)){
+			do Sys.wait(500);
+			do crtanje(56, false);
+			let B[krug] = 56;
+			return true;
+		}
+		if(trazi(49,P) & trazi(55,P) & ~trazi(52,B) & ~trazi(52, A)){
+			do Sys.wait(500);
+			do crtanje(52, false);
+			let B[krug] = 52;
+			return true;
+		}
+		if(trazi(50,P) & trazi(56,P) & ~trazi(53,B) & ~trazi(53, A)){
+			do Sys.wait(500);
+			do crtanje(53, false);
+			let B[krug] = 53;
+			return true;
+		}
+		if(trazi(51,P) & trazi(57,P) & ~trazi(54,B) & ~trazi(54, A)){
+			do Sys.wait(500);
+			do crtanje(54, false);
+			let B[krug] = 54;
+			return true;
+		}
+		if(trazi(51,P) & trazi(55,P) & ~trazi(53,B) & ~trazi(53, A)){
+			do Sys.wait(500);
+			do crtanje(53, false);
+			let B[krug] = 53;
+			return true;
+		}
+		if(trazi(49,P) & trazi(57,P) & ~trazi(53,B) & ~trazi(53, A)){
+			do Sys.wait(500);
+			do crtanje(53, false);
+			let B[krug] = 53;
+			return true;
+		}
+		return false;
+	}
+	
+	
+	
+	method bool trazi(int a, Array A)		//provjerava nalazi li se varijabla a u nekom polju A
+	{
+		var int i;
+		let i = 0;
+		while(i < 9)
+		{
+			if (A[i] = a)
+			{
+				return true;
+			}
+			let i = i + 1;
+		}
+		return false;
+	}
+	
+	
+	
+	method void nacrtaj_plocu()			//  nacrta plocu na sredini ekrana
+	{ 
+		do Screen.drawLine(224, 32, 224, 224);	//(x1,y1,x2,y2)  //lijeva
+		do Screen.drawLine(288, 32, 288, 224);	//desna
+		do Screen.drawLine(160, 96, 352, 96);	//gornja
+		do Screen.drawLine(160, 160, 352, 160);	//donja
+		return;
+	}
+	
+	method void nacrtajO(int x, int y)
+	{
+		do Screen.drawCircle(x, y, 21);//crni
+		do Screen.setColor(false);
+		do Screen.drawCircle(x, y, 20);//bijeli
+		do Screen.setColor(true);
+		return;
+	}
+
+	method void nacrtajX(int x, int y)
+	{ 
+		var int left, right, top, bottom;
+		let left = x - 17;
+		let right = x + 17;
+		let top = y + 17;
+		let bottom = y - 17;
+		do Screen.drawLine(left, top, right, bottom);
+		do Screen.drawLine(right, top, left, bottom);
+		return;
+	}
+	
+	method void crtanje(int a, int e)
+	{ 											//primi igraca (true(-1) = X ili false(0) = O),te poziciju na koju treba nacrtati(tipku) //na koje koordinate ce nacrtati X-O 
+		if(e)
+		{
+			if(a=49){do nacrtajX(190,62);}
+			if(a=50){do nacrtajX(256,62);}
+			if(a=51){do nacrtajX(322,62);}
+			if(a=52){do nacrtajX(190,128);}
+			if(a=53){do nacrtajX(256,128);}
+			if(a=54){do nacrtajX(322,128);}
+			if(a=55){do nacrtajX(190,194);}
+			if(a=56){do nacrtajX(256,194);}
+			if(a=57){do nacrtajX(322,194);}		
+		}
+		else
+		{
+			if(a=49){do nacrtajO(190,62);}
+			if(a=50){do nacrtajO(256,62);}
+			if(a=51){do nacrtajO(322,62);}
+			if(a=52){do nacrtajO(190,128);}
+			if(a=53){do nacrtajO(256,128);}
+			if(a=54){do nacrtajO(322,128);}
+			if(a=55){do nacrtajO(190,194);}
+			if(a=56){do nacrtajO(256,194);}
+			if(a=57){do nacrtajO(322,194);}
+		
+		}
+		
+		return;
+	}
+	
+	
+		method bool pobjednik(Array A)
+		{ 												// trazi ima li pobjednika
+		if(trazi(49, A) & trazi(52, A) & trazi(55, A))
+		{
+			return true;
+		}
+		if(trazi(50, A) & trazi(53, A) & trazi(56, A))
+		{
+			return true;
+		}
+		if(trazi(51, A) & trazi(54, A) & trazi(57, A))
+		{
+			return true;
+		}
+		if(trazi(49, A) & trazi(50, A) & trazi(51, A))
+		{
+			return true;
+		}
+		if(trazi(52, A) & trazi(53, A) & trazi(54, A))
+		{
+			return true;
+		}
+		if(trazi(55, A) & trazi(56, A) & trazi(57, A))
+		{
+			return true;
+		}
+		if(trazi(51, A) & trazi(53, A) & trazi(55, A))
+		{
+			return true;
+		}
+		if(trazi(49, A) & trazi(53, A) & trazi(57, A))
+		{
+			return true;
+		}
+		return false;
+		
+	}
+	
+	method int random()
+	{			 													//koji broj nije ni u A ni u B, taj broj stavi
+		if(~(trazi(57,A)) & ~trazi(57,B)){
+			return 57;
+		}
+		if(~(trazi(49,A)) & ~trazi(49,B)){
+			return 49;
+		}
+		if(~(trazi(51,A)) & ~trazi(51,B)){
+			return 51;
+		}
+		if(~(trazi(55,A)) & ~trazi(55,B)){
+			return 55;
+		}
+		if(~(trazi(54,A)) & ~trazi(54,B)){
+			return 54;
+		}
+		if(~(trazi(50,A)) & ~trazi(50,B)){
+			return 50;
+		}
+		if(~(trazi(56,A)) & ~trazi(56,B)){
+			return 56;
+		}
+		if(~(trazi(52,A)) & ~trazi(52,B)){
+			return 52;
+		}
+		if(~(trazi(53,A)) & ~trazi(53,B)){
+			return 53;
+		}
+		return 0;
+	}
+	
+	
+}

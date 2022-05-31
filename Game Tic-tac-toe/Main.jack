@@ -1,0 +1,15 @@
+class Main
+{
+	function void main()
+	{
+		var igra g;
+		let g = igra.new();
+		do g.prvi();
+		do Output.println();
+		do g.igranje();
+		return;
+		
+	}
+
+
+}
